@@ -14,3 +14,12 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/', function() {
+    if (\Cookie::has('dms_login')) {
+        return redirect('/home');
+    }
+    return view('login');
+});
+Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
+Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');

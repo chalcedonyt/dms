@@ -12,4 +12,17 @@ let mix = require('laravel-mix');
  */
 
 mix.react('resources/assets/js/app.js', 'public/js')
-   .less('resources/assets/less/app.less', 'public/css');
+    .extract([
+      'axios',
+      'prop-types',
+      'query-string',
+      'react',
+      'react-bootstrap',
+      'react-dom',
+      'react-loadable',
+      'react-router-dom',
+    ]);
+mix.less('resources/assets/less/app.less', 'public/css');
+if (mix.inProduction()) {
+  mix.version()
+}
