@@ -1,0 +1,19 @@
+#development use. Initializes a database for use
+version: "2"
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+#Comment this to make MySQL not persist
+      - ./docker/mysql/data_mount:/var/lib/mysql
+#Uncomment this to make MySQL not persist
+      # - /var/lib/mysql
+      - ./docker/mysql/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "33067:3306"
+    environment:
+#match this to env file
+      MYSQL_ROOT_PASSWORD: "2HZybP3DLkCf"
+      MYSQL_DATABASE: "dms"
+      MYSQL_USER: "lindykl"
+      MYSQL_PASSWORD: "2HZybP3DLkCf"

@@ -1,0 +1,5 @@
+[mysqld]
+skip-host-cache
+skip-name-resolve
+secure_file_priv=""
+max_allowed_packet=32M

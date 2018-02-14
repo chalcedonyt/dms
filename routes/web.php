@@ -21,5 +21,12 @@ Route::get('/', function() {
     }
     return view('login');
 });
+Route::get('/login', function() {
+    return view('login');
+});
 Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
 Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');
+
+Route::get('/home', function(){
+    return response('Logged in');
+});
