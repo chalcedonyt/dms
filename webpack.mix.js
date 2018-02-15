@@ -22,6 +22,9 @@ mix.react('resources/assets/js/app.js', 'public/js')
       'react-loadable',
       'react-router-dom',
     ]);
+
+mix.react('resources/assets/js/lists.js', 'public/js');
+
 mix.less('resources/assets/less/app.less', 'public/css');
 if (mix.inProduction()) {
   mix.version()

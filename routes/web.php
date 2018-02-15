@@ -11,22 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/', function() {
-    if (\Cookie::has('dms_login')) {
-        return redirect('/home');
-    }
-    return view('login');
-});
 Route::get('/login', function() {
     return view('login');
 });
 Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
 Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');
 
-Route::get('/home', function(){
-    return response('Logged in');
+Route::middleware('auth')->group(function(){
+    Route::get('/home', function(){
+        return view('home');
+    });
+    Route::get('/list/create', 'MemberListController@create');
+});
+
+Route::middleware('auth')->prefix('api')->group(function() {
+    Route::get('spreadsheets', 'Api\\GoogleSheetsController@index');
+    Route::get('spreadsheets/{spreadsheet_id}/sheets', 'Api\\GoogleSheetsController@sheets');
 });

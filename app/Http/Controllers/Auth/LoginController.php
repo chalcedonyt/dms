@@ -38,13 +38,18 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        // $this->middleware('guest')->except('logout');
     }
 
     public function redirectToProvider() {
         return Socialite::driver('google')
-        ->scopes(['profile', 'email'])
+        ->scopes([
+            'profile',
+            'email',
+            'https://www.googleapis.com/auth/drive.readonly',
+            'https://www.googleapis.com/auth/spreadsheets.readonly'])
         ->redirect();
+
     }
 
      /**

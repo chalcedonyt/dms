@@ -5,13 +5,14 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.0.0",
-        "asimlqt/php-google-spreadsheet-client": "^3.0",
+        "php": "^7.1",
         "fideloper/proxy": "~3.3",
         "firebase/php-jwt": "^5.0",
+        "google/apiclient": "^2.0",
         "laravel/framework": "5.5.*",
         "laravel/socialite": "^3.0",
         "laravel/tinker": "~1.0",
+        "laravelista/ekko": "^1.5",
         "nztim/mailchimp": "^3.7",
         "spatie/laravel-fractal": "^5.3"
     },
