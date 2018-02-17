@@ -30,4 +30,6 @@ Route::middleware('auth')->prefix('api')->group(function() {
     Route::get('spreadsheets/{spreadsheet_id}/sheets', 'Api\\GoogleSheetsController@sheets');
     Route::get('spreadsheets/{spreadsheet_id}/{sheet_id}', 'Api\\GoogleSheetsController@show')
     ->where('sheet_id', '[0-9]+');
+
+    Route::post('member_lists', 'Api\\MemberListController@store');
 });

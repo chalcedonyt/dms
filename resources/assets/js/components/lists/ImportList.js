@@ -18,7 +18,8 @@ class ImportList extends Component {
     this.state = {
       headers: null,
       specialColumns: null,
-      items: null
+      items: null,
+      listTitle: ''
     }
     this.handleHeaderChange = this.handleHeaderChange.bind(this)
     this.handleItemChange = this.handleItemChange.bind(this)
@@ -28,15 +29,26 @@ class ImportList extends Component {
   componentWillMount() {
     api.getSheetData(this.props.match.params.spreadsheetId, this.props.match.params.sheetId)
       .then(({ headers, special_columns, items, suggested_title }) => {
-        const parsedHeaders = headers.map((header) => {
+        const parsedHeaders = headers.map((header, i) => {
           header.isChecked = true
+          header.offset = i
           return header
         })
 
-        const parsedItems = items.map((item) => {
-          item.isChecked = true
-          return item
+        const parsedItems = items.map((item, i) => {
+          //assign offsets to every column
+          return {
+            attributes: item.map((col, i) => {
+              return {
+                offset: i,
+                value: col,
+              }
+            }),
+            isChecked: true
+          }
         })
+
+        console.log("Parsed items are %O, headers are %O", parsedItems, parsedHeaders)
         this.setState({
           headers: parsedHeaders,
           specialColumns: special_columns,
@@ -63,22 +75,47 @@ class ImportList extends Component {
   }
 
   doImport() {
-    const attrsToCreate = this.state.headers
+    const allAttrs = this.state.headers
     .map((header, i) => {
       header.offset = i
       return header
     })
     .filter((header) => header.isChecked)
 
+    const attrs = allAttrs.filter((attr) => attr.special_type == null)
+    const specialAttrs = allAttrs.filter((attr) => attr.special_type != null)
+    .map((attr) => {
+      attr.special_type = attr.special_type.toLowerCase()
+      return attr
+    })
+    console.log("Special attrs are %O", specialAttrs)
     const itemsToCreate = this.state.items
     .filter((item) => item.isChecked)
-    .map((item) => {
-      return item.filter((col, i) => {
-        return _.find(attrsToCreate, {offset: i})
+    .map((item, i) => {
+      const specialItemAttrs = item.attributes.filter((attr) => {
+        return _.map(specialAttrs, 'offset').includes(attr.offset)
       })
-    })
 
-    console.log("Creating attrs %O and items %O", attrsToCreate, itemsToCreate)
+      return {
+        attributes: item.attributes.filter((attr) => {
+          return _.map(attrs, 'offset').includes(attr.offset)
+        }),
+        special: {
+          email: _.find(specialItemAttrs, {offset: _.find(specialAttrs, {special_type: 'email'}).offset}).value,
+          contact: _.find(specialItemAttrs, {offset: _.find(specialAttrs, {special_type: 'contact'}).offset}).value,
+          name: _.find(specialItemAttrs, {offset: _.find(specialAttrs, {special_type: 'name'}).offset}).value,
+        }
+      }
+    })
+    const params = {
+      list_title: this.state.listTitle,
+      attributes: attrs,
+      members: itemsToCreate
+    }
+    api.importData(params)
+    .then(({data}) => {
+      console.log(data)
+    })
   }
 
   render() {
@@ -100,7 +137,7 @@ class ImportList extends Component {
               <thead>
                 <tr>
                   <th></th>
-                  {this.state.headers.map((header, i) => (
+                  {this.state.headers.map((header) => (
                     <th key={header.name} style={header.isChecked ? {} : { backgroundColor: 'lightgrey' }}>
                       {header.special_type
                         ? <div>
@@ -111,7 +148,7 @@ class ImportList extends Component {
                             type="checkbox"
                             defaultChecked={header.isChecked}
                             onChange={this.handleHeaderChange}
-                            value={i}
+                            value={header.offset}
                           />
                         </div>
                       }
@@ -138,12 +175,14 @@ class ImportList extends Component {
                         onChange={this.handleItemChange}
                       />
                     </td>
-                    {this.state.headers.map((header, j) => (
+                    {this.state.headers.map((header) => (
                       <td
-                        key={j}
+                        key={header.offset}
                         style={header.isChecked ? {} : { backgroundColor: 'lightgrey' }}
                       >
-                        {item[j]}
+                        {_.find(item.attributes, {offset: header.offset})
+                        ? _.find(item.attributes, {offset: header.offset}).value
+                        : null}
                       </td>
                     ))}
                   </tr>

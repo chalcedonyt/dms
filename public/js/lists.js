@@ -928,15 +928,29 @@ module.exports = {
 
   getSheets: function getSheets(spreadsheetId) {
     var encodedURI = window.encodeURI(endpoint + '/spreadsheets/' + spreadsheetId + '/sheets');
-    return axios.get(encodedURI).then(function (response) {
-      return response.data;
+    return axios.get(encodedURI).then(function (_ref) {
+      var data = _ref.data;
+      return data;
     });
   },
 
   getSheetData: function getSheetData(spreadsheetId, sheetId) {
     var encodedURI = window.encodeURI(endpoint + '/spreadsheets/' + spreadsheetId + '/' + sheetId);
-    return axios.get(encodedURI).then(function (response) {
-      return response.data;
+    return axios.get(encodedURI).then(function (_ref2) {
+      var data = _ref2.data;
+      return data;
+    });
+  },
+
+  importData: function importData(params) {
+    var encodedURI = window.encodeURI(endpoint + '/member_lists');
+    return axios.post(encodedURI, params, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (_ref3) {
+      var data = _ref3.data;
+      return data;
     });
   }
 };
@@ -20213,7 +20227,8 @@ var ImportList = function (_Component) {
     _this.state = {
       headers: null,
       specialColumns: null,
-      items: null
+      items: null,
+      listTitle: ''
     };
     _this.handleHeaderChange = _this.handleHeaderChange.bind(_this);
     _this.handleItemChange = _this.handleItemChange.bind(_this);
@@ -20232,15 +20247,26 @@ var ImportList = function (_Component) {
             items = _ref.items,
             suggested_title = _ref.suggested_title;
 
-        var parsedHeaders = headers.map(function (header) {
+        var parsedHeaders = headers.map(function (header, i) {
           header.isChecked = true;
+          header.offset = i;
           return header;
         });
 
-        var parsedItems = items.map(function (item) {
-          item.isChecked = true;
-          return item;
+        var parsedItems = items.map(function (item, i) {
+          //assign offsets to every column
+          return {
+            attributes: item.map(function (col, i) {
+              return {
+                offset: i,
+                value: col
+              };
+            }),
+            isChecked: true
+          };
         });
+
+        console.log("Parsed items are %O, headers are %O", parsedItems, parsedHeaders);
         _this2.setState({
           headers: parsedHeaders,
           specialColumns: special_columns,
@@ -20270,22 +20296,51 @@ var ImportList = function (_Component) {
   }, {
     key: 'doImport',
     value: function doImport() {
-      var attrsToCreate = this.state.headers.map(function (header, i) {
+      var allAttrs = this.state.headers.map(function (header, i) {
         header.offset = i;
         return header;
       }).filter(function (header) {
         return header.isChecked;
       });
 
+      var attrs = allAttrs.filter(function (attr) {
+        return attr.special_type == null;
+      });
+      var specialAttrs = allAttrs.filter(function (attr) {
+        return attr.special_type != null;
+      }).map(function (attr) {
+        attr.special_type = attr.special_type.toLowerCase();
+        return attr;
+      });
+      console.log("Special attrs are %O", specialAttrs);
       var itemsToCreate = this.state.items.filter(function (item) {
         return item.isChecked;
-      }).map(function (item) {
-        return item.filter(function (col, i) {
-          return _.find(attrsToCreate, { offset: i });
+      }).map(function (item, i) {
+        var specialItemAttrs = item.attributes.filter(function (attr) {
+          return _.map(specialAttrs, 'offset').includes(attr.offset);
         });
-      });
 
-      console.log("Creating attrs %O and items %O", attrsToCreate, itemsToCreate);
+        return {
+          attributes: item.attributes.filter(function (attr) {
+            return _.map(attrs, 'offset').includes(attr.offset);
+          }),
+          special: {
+            email: _.find(specialItemAttrs, { offset: _.find(specialAttrs, { special_type: 'email' }).offset }).value,
+            contact: _.find(specialItemAttrs, { offset: _.find(specialAttrs, { special_type: 'contact' }).offset }).value,
+            name: _.find(specialItemAttrs, { offset: _.find(specialAttrs, { special_type: 'name' }).offset }).value
+          }
+        };
+      });
+      var params = {
+        list_title: this.state.listTitle,
+        attributes: attrs,
+        members: itemsToCreate
+      };
+      api.importData(params).then(function (_ref2) {
+        var data = _ref2.data;
+
+        console.log(data);
+      });
     }
   }, {
     key: 'render',
@@ -20331,7 +20386,7 @@ var ImportList = function (_Component) {
                 'tr',
                 null,
                 _react2.default.createElement('th', null),
-                this.state.headers.map(function (header, i) {
+                this.state.headers.map(function (header) {
                   return _react2.default.createElement(
                     'th',
                     { key: header.name, style: header.isChecked ? {} : { backgroundColor: 'lightgrey' } },
@@ -20350,7 +20405,7 @@ var ImportList = function (_Component) {
                         type: 'checkbox',
                         defaultChecked: header.isChecked,
                         onChange: _this3.handleHeaderChange,
-                        value: i
+                        value: header.offset
                       })
                     )
                   );
@@ -20386,14 +20441,14 @@ var ImportList = function (_Component) {
                       onChange: _this3.handleItemChange
                     })
                   ),
-                  _this3.state.headers.map(function (header, j) {
+                  _this3.state.headers.map(function (header) {
                     return _react2.default.createElement(
                       'td',
                       {
-                        key: j,
+                        key: header.offset,
                         style: header.isChecked ? {} : { backgroundColor: 'lightgrey' }
                       },
-                      item[j]
+                      _.find(item.attributes, { offset: header.offset }) ? _.find(item.attributes, { offset: header.offset }).value : null
                     );
                   })
                 );

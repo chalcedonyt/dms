@@ -15,16 +15,21 @@ module.exports = {
   getSheets: (spreadsheetId) => {
     const encodedURI = window.encodeURI(`${endpoint}/spreadsheets/${spreadsheetId}/sheets`);
     return axios.get(encodedURI)
-      .then(function (response) {
-        return response.data;
-      });
+    .then(({data}) => data)
   },
 
   getSheetData: (spreadsheetId, sheetId) => {
     const encodedURI = window.encodeURI(`${endpoint}/spreadsheets/${spreadsheetId}/${sheetId}`);
     return axios.get(encodedURI)
-      .then(function (response) {
-        return response.data;
-      });
+    .then(({data}) => data)
+  },
+
+  importData: (params) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_lists`);
+    return axios.post(encodedURI, params, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(({data}) => data)
   }
 }

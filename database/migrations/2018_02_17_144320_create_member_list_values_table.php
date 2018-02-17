@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMembersListsPivotTable extends Migration
+class CreateMemberListValuesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,17 @@ class CreateMembersListsPivotTable extends Migration
      */
     public function up()
     {
-        Schema::create('members_lists_pivot', function (Blueprint $table) {
+        Schema::create('member_list_values', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('member_list_id');
             $table->integer('member_id');
+            $table->integer('member_list_id');
+            $table->integer('member_list_attribute_id');
+            $table->string('value')->nullable();
+            $table->timestamps();
 
-            $table->index('member_list_id');
             $table->index('member_id');
+            $table->index('member_list_id');
+            $table->index('member_list_attribute_id');
         });
     }
 
@@ -30,6 +34,6 @@ class CreateMembersListsPivotTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('members_lists_pivot');
+        Schema::dropIfExists('member_list_values');
     }
 }
