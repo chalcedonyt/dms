@@ -22,9 +22,12 @@ Route::middleware('auth')->group(function(){
         return view('home');
     });
     Route::get('/list/create', 'MemberListController@create');
+    Route::get('/list/import/{spreadsheet_id}/{sheet_id}', 'MemberListController@sheetImport');
 });
 
 Route::middleware('auth')->prefix('api')->group(function() {
     Route::get('spreadsheets', 'Api\\GoogleSheetsController@index');
     Route::get('spreadsheets/{spreadsheet_id}/sheets', 'Api\\GoogleSheetsController@sheets');
+    Route::get('spreadsheets/{spreadsheet_id}/{sheet_id}', 'Api\\GoogleSheetsController@show')
+    ->where('sheet_id', '[0-9]+');
 });

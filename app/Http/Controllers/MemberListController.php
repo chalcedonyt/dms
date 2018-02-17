@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\MemberList;
 use Illuminate\Http\Request;
 
+use App\Services\SpreadsheetService\SpreadsheetServiceFactory;
+
 class MemberListController extends Controller
 {
     /**
@@ -25,6 +27,11 @@ class MemberListController extends Controller
     public function create()
     {
         return view('lists.create');
+    }
+
+    public function sheetImport(Request $request, string $spreadsheet_id, int $sheet_id)
+    {
+        return view('lists.import');
     }
 
     /**
@@ -82,4 +89,5 @@ class MemberListController extends Controller
     {
         //
     }
+
 }
