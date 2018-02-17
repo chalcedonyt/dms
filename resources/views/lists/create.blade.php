@@ -5,7 +5,7 @@
 @section('content')
 @include('layouts.nav')
 <h1>Create a list</h1>
-<div id="list">
+<div id="list"></div>
 @endsection
 
 @section('scripts')

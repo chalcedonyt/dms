@@ -28,7 +28,7 @@ class ImportList extends Component {
 
   componentWillMount() {
     api.getSheetData(this.props.match.params.spreadsheetId, this.props.match.params.sheetId)
-      .then(({ headers, special_columns, items, suggested_title }) => {
+      .then(({ headers, special_columns: specialColumns, items, suggested_title: listTitle }) => {
         const parsedHeaders = headers.map((header, i) => {
           header.isChecked = true
           header.offset = i
@@ -51,9 +51,9 @@ class ImportList extends Component {
         console.log("Parsed items are %O, headers are %O", parsedItems, parsedHeaders)
         this.setState({
           headers: parsedHeaders,
-          specialColumns: special_columns,
+          specialColumns,
           items: parsedItems,
-          listTitle: suggested_title
+          listTitle
         })
       })
   }
@@ -113,8 +113,8 @@ class ImportList extends Component {
       members: itemsToCreate
     }
     api.importData(params)
-    .then(({data}) => {
-      console.log(data)
+    .then(({id}) => {
+      window.location = '/list/' + id
     })
   }
 

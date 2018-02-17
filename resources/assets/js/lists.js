@@ -18,11 +18,15 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 const CreateList = require('./components/lists/CreateList')
 const ImportList = require('./components/lists/ImportList')
+const Lists = require('./components/lists/Lists')
+const List = require('./components/lists/List')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
 
 ReactDOM.render(
     <BrowserRouter>
       <div>
+        <Route exact path='/lists' component={Lists} />
+        <Route exact path='/list/:listId' component={List} />
         <Route exact path='/list/create' component={CreateList} />
         <Route exact path='/list/import/:spreadsheetId/:sheetId' component={ImportList} />
       </div>

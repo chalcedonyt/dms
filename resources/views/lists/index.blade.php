@@ -1,10 +1,10 @@
 @extends('layouts.master')
 
-@section('title', 'Import list')
+@section('title', 'Lists')
 
 @section('content')
 @include('layouts.nav')
-<h1>Importing list from Google Sheets</h1>
+<h1>Lists</h1>
 <div id="list"></div>
 @endsection
 

@@ -31,5 +31,20 @@ module.exports = {
         'Content-Type': 'application/json'
       }
     }).then(({data}) => data)
+  },
+
+  getList: (listId) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}`);
+    return axios.get(encodedURI).then(({data}) => data)
+  },
+
+  getLists: (params = null) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_lists`);
+    return axios.get(encodedURI).then(({data}) => data)
+  },
+
+  syncWithMailchimp: (listId) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_lists/${listId}/mailchimp-sync`);
+    return axios.post(encodedURI).then(({data}) => data)
   }
 }
