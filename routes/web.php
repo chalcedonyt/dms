@@ -50,5 +50,5 @@ Route::middleware('auth')->prefix('api')->group(function() {
 
     Route::post('vouchers', 'Api\\VoucherController@store');
     Route::get('vouchers', 'Api\\VoucherController@index');
-    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
 });
+Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
