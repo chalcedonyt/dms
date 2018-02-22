@@ -18,6 +18,7 @@ const React = require('react')
 const ReactDOM = require('react-dom')
 const Vouchers = require('./components/vouchers/Vouchers')
 const CreateVoucher = require('./components/vouchers/CreateVoucher')
+const ValidateVoucher = require('./components/vouchers/ValidateVoucher')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
 
 ReactDOM.render(
@@ -26,6 +27,7 @@ ReactDOM.render(
         <Switch>
           <Route exact path='/vouchers' component={Vouchers} />
           <Route exact path='/voucher/create' component={CreateVoucher} />
+          <Route exact path='/bc/:uuid' component={ValidateVoucher} />
         </Switch>
       </div>
     </BrowserRouter>

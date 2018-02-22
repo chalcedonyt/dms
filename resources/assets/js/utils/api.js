@@ -46,7 +46,7 @@ module.exports = {
   },
 
   syncWithMailchimp: (listId) => {
-    const encodedURI = window.encodeURI(`${endpoint}/member_lists/${listId}/mailchimp-sync`);
+    const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}/mailchimp-sync`);
     return axios.post(encodedURI).then(({data}) => data)
   },
 
@@ -62,6 +62,23 @@ module.exports = {
 
   getVouchers: (params = null) => {
     const encodedURI = window.encodeURI(`${endpoint}/vouchers`);
+    return axios.get(encodedURI).then(({data}) => data)
+  },
+
+  assignVoucher: (listId, memberIds, voucher) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}/assign-voucher`);
+    return axios.post(encodedURI, {
+      member_ids: memberIds,
+      voucher_id: voucher.id
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+  },
+
+  validateVoucher: (uuid) => {
+    const encodedURI = window.encodeURI(`${endpoint}/voucher-validate/${uuid}`);
     return axios.get(encodedURI).then(({data}) => data)
   }
 }

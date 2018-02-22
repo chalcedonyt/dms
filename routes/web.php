@@ -11,12 +11,17 @@
 |
 */
 
+Route::get('/', function() {
+    return view('login');
+});
 Route::get('login', function() {
     return view('login');
 });
 Route::get('logout', 'Auth\\LoginController@logout');
 Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
 Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');
+
+Route::get('/bc/{uuid}', 'VoucherAssignmentController@validateVoucher');
 
 Route::middleware('auth')->group(function(){
     Route::get('/home', function(){
@@ -40,8 +45,10 @@ Route::middleware('auth')->prefix('api')->group(function() {
     Route::post('member_lists', 'Api\\MemberListController@store');
     Route::get('member_lists', 'Api\\MemberListController@index');
     Route::get('member_list/{id}', 'Api\\MemberListController@show');
-    Route::post('member_lists/{id}/mailchimp-sync', 'Api\\MemberListController@mailchimpSync');
+    Route::post('member_list/{id}/assign-voucher', 'Api\\MemberListController@assignVoucher');
+    Route::post('member_list/{id}/mailchimp-sync', 'Api\\MemberListController@mailchimpSync');
 
     Route::post('vouchers', 'Api\\VoucherController@store');
     Route::get('vouchers', 'Api\\VoucherController@index');
+    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
 });

@@ -9,6 +9,9 @@ use App\Member;
 use App\MemberList;
 use App\MemberListAttribute;
 use App\MemberListValue;
+use App\Voucher;
+use App\VoucherAssignment;
+
 use \DrewM\MailChimp\MailChimp;
 
 class MemberListController extends Controller
@@ -57,6 +60,26 @@ class MemberListController extends Controller
         $data = fractal()->includeMembers()
         ->item($list, new \App\Transformers\MemberListTransformer)->toArray();
         return response()->json($data);
+    }
+
+    public function assignVoucher(Request $request, int $list_id) {
+        $list = MemberList::find($list_id);
+        $voucher = Voucher::find($request->input('voucher_id'));
+
+        foreach ($request->input('member_ids') as $member_id) {
+            VoucherAssignment::create([
+                'member_list_id' => $list->getKey(),
+                'member_id' => $member_id,
+                'voucher_id' => $voucher->getKey(),
+                'assigned_by' => \Auth::user()->getKey(),
+                'expires_at' => (new \App\Gateways\VoucherGateway)->deriveExpiry($voucher),
+                'uuid' => md5(rand().$list->title)
+            ]);
+        }
+        return response()->json([
+            'success' => 1,
+            'errors' => []
+        ]);
     }
 
     public function store(Request $request)
@@ -119,7 +142,6 @@ class MemberListController extends Controller
     {
         $list = MemberList::with('members')->find($id);
         $list_data = fractal()->includeMembers()->item($list, new \App\Transformers\MemberListTransformer)->toArray();
-
         if (!$list->mailchimp_list_id) {
             $response = $this->mailchimp->post('lists', [
                 'name' => $list->name,
@@ -143,6 +165,17 @@ class MemberListController extends Controller
                 'type' => 'text'
             ]);
         }
+        //voucher merge field
+        $this->mailchimp->post('lists/'.$list->mailchimp_list_id.'/merge-fields', [
+            'tag' => 'VOUCHER',
+            'name' => 'Voucher type',
+            'type' => 'text'
+        ]);
+        $this->mailchimp->post('lists/'.$list->mailchimp_list_id.'/merge-fields', [
+            'tag' => 'BARCODE',
+            'name' => 'Barcode url',
+            'type' => 'text'
+        ]);
 
         $member_data = collect($list_data['members'])->map(function ($member) {
             $data = [
@@ -157,16 +190,19 @@ class MemberListController extends Controller
                 $tag = strtoupper(str_slug($member['attributes'][$i]['attribute_name']));
                 $data['merge_fields'][$tag] = trim($member['attributes'][$i]['value']) ?: '';
             }
+            if ($member['voucher_assignment']) {
+                $data['merge_fields']['VOUCHER'] = $member['voucher_assignment']['voucher']['title'];
+                $data['merge_fields']['BARCODE'] = $member['voucher_assignment']['barcode_url'];
+            }
             return $data;
         })->all();
-
         $response = $this->mailchimp->post('lists/'.$list->mailchimp_list_id, [
             'members' => $member_data,
             'update_existing' => true
         ]);
 
         $data = [];
-        if ($response['errors'] && count($response['errors'])) {
+        if (isset($response['errors']) && count($response['errors'])) {
             $data['errors'] = collect($response['errors'])->pluck('error');
         } else {
             $data['success'] = true;

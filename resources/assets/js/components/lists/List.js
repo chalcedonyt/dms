@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 const api = require('../../utils/api')
+
+const AlertDismissable = require('../shared/AlertDismissable')
 const Button = require('react-bootstrap/lib/Button')
 const ButtonGroup = require('react-bootstrap/lib/ButtonGroup')
 const Col = require('react-bootstrap/lib/Col')
+const DropdownButton = require('react-bootstrap/lib/DropdownButton')
+const Label = require('react-bootstrap/lib/Label')
+const ListGroup = require('react-bootstrap/lib/ListGroup')
+const ListGroupItem = require('react-bootstrap/lib/ListGroupItem')
+const Modal = require('react-bootstrap/lib/Modal')
+const MenuItem = require('react-bootstrap/lib/MenuItem')
 const Row = require('react-bootstrap/lib/Row')
 const Table = require('react-bootstrap/lib/Table')
-const AlertDismissable = require('../shared/AlertDismissable')
+
+const VoucherExpiryTypeText = require('../vouchers/VoucherExpiryTypeText')
 
 class List extends Component {
   constructor(props) {
@@ -19,10 +28,16 @@ class List extends Component {
       hasMailchimpList: null,
       members: null,
       name: null,
-      selectedMembers: []
+      selectedMemberIds: [],
+      selectedVoucher: null,
+      showVoucherModal: false,
+      vouchers: []
     }
 
     this.handleSync = this.handleSync.bind(this)
+    this.handleVoucherModalClose = this.handleVoucherModalClose.bind(this)
+    this.handleVoucherModalConfirm = this.handleVoucherModalConfirm.bind(this)
+    this.handleVoucherSelect = this.handleVoucherSelect.bind(this)
     this.toggleSelect = this.toggleSelect.bind(this)
     this.toggleSelectAll = this.toggleSelectAll.bind(this)
   }
@@ -38,16 +53,23 @@ class List extends Component {
           hasMailchimpList: mailchimp_list_id || null
         })
       })
+
+    api.getVouchers()
+      .then(({ vouchers }) => {
+        this.setState({
+          vouchers
+        })
+      });
   }
 
   toggleSelect(e) {
     const val = parseInt(e.target.value)
-    this.state.selectedMembers.includes(val)
+    this.state.selectedMemberIds.includes(val)
       ? this.setState({
-        selectedMembers: _.without(this.state.selectedMembers, val)
+        selectedMemberIds: _.without(this.state.selectedMemberIds, val)
       })
       : this.setState({
-        selectedMembers: _.concat(this.state.selectedMembers, [val])
+        selectedMemberIds: _.concat(this.state.selectedMemberIds, [val])
       })
   }
 
@@ -61,14 +83,38 @@ class List extends Component {
       })
   }
 
+  handleVoucherModalClose() {
+    this.setState({
+      selectedVoucher: null,
+      showVoucherModal: false
+    })
+  }
+
+  handleVoucherModalConfirm() {
+    api.assignVoucher(this.props.match.params.listId, this.state.selectedMemberIds, this.state.selectedVoucher)
+    .then(({ success, errors}) => {
+      this.setState({
+        selectedVoucher: null,
+        showVoucherModal: false
+      })
+    })
+  }
+
+  handleVoucherSelect(voucher) {
+    this.setState({
+      selectedVoucher: voucher,
+      showVoucherModal: true
+    })
+  }
+
   toggleSelectAll(e) {
     if (!e.target.checked) {
       this.setState({
-        selectedMembers: []
+        selectedMemberIds: []
       })
     } else {
       this.setState({
-        selectedMembers: _.map(this.state.members, 'id')
+        selectedMemberIds: _.map(this.state.members, 'id')
       })
     }
   }
@@ -82,16 +128,57 @@ class List extends Component {
         <h2>Actions</h2>
         <ButtonGroup>
           <Button onClick={this.handleSync}>{this.state.hasMailchimpList ? 'Update Mailchimp List' : 'Create Mailchimp List'}</Button>
-          <Button>Create a Voucher</Button>
         </ButtonGroup>
 
         <h2>List Members</h2>
         {this.state.members &&
             <p>There are {this.state.members.length} people in this list &nbsp;
-            {this.state.selectedMembers.length > 0 &&
-                <strong>({this.state.selectedMembers.length} selected)</strong>
+            {this.state.selectedMemberIds.length > 0 &&
+                <strong>({this.state.selectedMemberIds.length} selected)</strong>
             }
             </p>
+        }
+        {this.state.selectedMemberIds.length > 0 &&
+        <div>
+          <h5>With selected:</h5>
+          <DropdownButton
+            title="Choose a voucher to assign"
+            id={`dropdown-basic`}
+            >
+            {this.state.vouchers.map((v) => (
+              <MenuItem
+                key={v.id}
+                eventKey={v.id}
+                onClick={(e) => this.handleVoucherSelect(v)}
+              >{v.title}</MenuItem>
+            ))}
+          </DropdownButton>
+          {this.state.selectedVoucher &&
+            <Modal show={this.state.showVoucherModal}>
+              <Modal.Header>
+                <Modal.Title>Assign {this.state.selectedVoucher.title} to {this.state.selectedMemberIds.length} member(s)</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <h4>Voucher:</h4>
+                <p>{this.state.selectedVoucher.title}</p>
+                <h4>Expiry type</h4>
+                <VoucherExpiryTypeText voucher={this.state.selectedVoucher} />
+
+                <h4>Selected members</h4>
+                <ListGroup>
+                {this.state.members.filter((m) => this.state.selectedMemberIds.includes(m.id))
+                .map((m, i) => (
+                  <ListGroupItem key={i}>{m.name} ({m.email})</ListGroupItem>
+                ))}
+                </ListGroup>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button onClick={this.handleVoucherModalClose}>Cancel</Button>
+                <Button bsStyle='primary' onClick={this.handleVoucherModalConfirm}>Confirm</Button>
+              </Modal.Footer>
+            </Modal>
+          }
+        </div>
         }
         {Array.isArray(this.state.members) && (
           <Table>
@@ -101,7 +188,7 @@ class List extends Component {
                   <input
                     onChange={this.toggleSelectAll}
                     type="checkbox"
-                    checked={this.state.members.length > 0 && this.state.selectedMembers.length == this.state.members.length}
+                    checked={this.state.members.length > 0 && this.state.selectedMemberIds.length == this.state.members.length}
                   />
                 </th>
                 <th>Name</th>
@@ -110,6 +197,7 @@ class List extends Component {
                 {this.state.members[0].attributes.map((attr, i) => (
                   <th key={i}>{attr.attribute_name}</th>
                 ))}
+                <th>Voucher</th>
               </tr>
             </thead>
             <tbody>
@@ -120,7 +208,7 @@ class List extends Component {
                       type="checkbox"
                       onChange={this.toggleSelect}
                       value={parseInt(member.id)}
-                      checked={this.state.selectedMembers.includes(parseInt(member.id))}
+                      checked={this.state.selectedMemberIds.includes(parseInt(member.id))}
                     />
                   </td>
                   <td>{member.name}</td>
@@ -129,6 +217,11 @@ class List extends Component {
                   {member.attributes.map((attr, i) => (
                     <td key={i}>{attr.value}</td>
                   ))}
+                  <td>
+                  {member.voucher_assignment != null && (
+                    <Label bsStyle='info'>{member.voucher_assignment.voucher.title}</Label>
+                  )}
+                  </td>
                 </tr>
               ))}
             </tbody>

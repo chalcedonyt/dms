@@ -19,12 +19,14 @@ class CreateVoucherAssignmentsTable extends Migration
             $table->integer('member_id');
             $table->integer('voucher_id');
             $table->integer('assigned_by');
+            $table->string('uuid', 255);
             $table->timestamp('expires_at');
             $table->timestamps();
 
             $table->index('member_list_id');
             $table->index('member_id');
             $table->index('voucher_id');
+            $table->index('uuid');
         });
     }
 

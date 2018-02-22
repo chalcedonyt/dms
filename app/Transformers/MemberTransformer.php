@@ -33,6 +33,14 @@ class MemberTransformer extends TransformerAbstract
                     return $attr;
                 })->toArray();
             }
+            $voucher_assignment = \App\VoucherAssignment::with('voucher')
+            ->belongsToListMember($list->getKey(), $member->getKey())
+            ->get()
+            ->first();
+            $data['voucher_assignment'] = null;
+            if ($voucher_assignment) {
+                $data['voucher_assignment'] = fractal()->item($voucher_assignment, new \App\Transformers\VoucherAssignmentTransformer)->toArray();
+            }
         }
         return $data;
     }
