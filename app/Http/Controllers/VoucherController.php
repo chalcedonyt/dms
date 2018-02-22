@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\MemberList;
+use App\Voucher;
 use Illuminate\Http\Request;
 
-use App\Services\SpreadsheetService\SpreadsheetServiceFactory;
-
-class MemberListController extends Controller
+class VoucherController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +14,7 @@ class MemberListController extends Controller
      */
     public function index()
     {
-        return view('lists.index');
+        return view('vouchers.index');
     }
 
     /**
@@ -26,12 +24,7 @@ class MemberListController extends Controller
      */
     public function create()
     {
-        return view('lists.create');
-    }
-
-    public function sheetImport(Request $request, string $spreadsheet_id, int $sheet_id)
-    {
-        return view('lists.import');
+        return view('vouchers.create');
     }
 
     /**
@@ -48,21 +41,21 @@ class MemberListController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\MemberList  $memberList
+     * @param  \App\Voucher  $voucher
      * @return \Illuminate\Http\Response
      */
-    public function show(MemberList $memberList)
+    public function show(Voucher $voucher)
     {
-        return view('lists.show')->with(['list_name' => $memberList->name]);
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\MemberList  $memberList
+     * @param  \App\Voucher  $voucher
      * @return \Illuminate\Http\Response
      */
-    public function edit(MemberList $memberList)
+    public function edit(Voucher $voucher)
     {
         //
     }
@@ -71,10 +64,10 @@ class MemberListController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\MemberList  $memberList
+     * @param  \App\Voucher  $voucher
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MemberList $memberList)
+    public function update(Request $request, Voucher $voucher)
     {
         //
     }
@@ -82,12 +75,11 @@ class MemberListController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\MemberList  $memberList
+     * @param  \App\Voucher  $voucher
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MemberList $memberList)
+    public function destroy(Voucher $voucher)
     {
         //
     }
-
 }

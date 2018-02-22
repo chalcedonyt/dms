@@ -16,21 +16,17 @@ require('./bootstrap');
 window.__BASE_API_URL = '/api';
 const React = require('react')
 const ReactDOM = require('react-dom')
-const CreateList = require('./components/lists/CreateList')
-const ImportList = require('./components/lists/ImportList')
-const Lists = require('./components/lists/Lists')
-const List = require('./components/lists/List')
+const Vouchers = require('./components/vouchers/Vouchers')
+const CreateVoucher = require('./components/vouchers/CreateVoucher')
 import {Route, BrowserRouter, Switch} from 'react-router-dom'
 
 ReactDOM.render(
     <BrowserRouter>
       <div>
         <Switch>
-          <Route exact path='/lists' component={Lists} />
-          <Route exact path='/list/create' component={CreateList} />
-          <Route exact path='/list/:listId' component={List} />
-          <Route exact path='/list/import/:spreadsheetId/:sheetId' component={ImportList} />
+          <Route exact path='/vouchers' component={Vouchers} />
+          <Route exact path='/voucher/create' component={CreateVoucher} />
         </Switch>
       </div>
     </BrowserRouter>
-, document.getElementById('list'));
+, document.getElementById('voucher'));

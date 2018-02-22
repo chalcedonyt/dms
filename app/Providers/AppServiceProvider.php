@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use \DrewM\MailChimp\MailChimp;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
             $client = new \Google_Client();
             $client->setAccessToken($access_token);
             return $client;
+        });
+
+        $this->app->singleton(Mailchimp::class, function ($app): Mailchimp {
+            return new MailChimp(env('MC_KEY'));
         });
     }
 }

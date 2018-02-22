@@ -72,4 +72,11 @@ class LoginController extends Controller
             return redirect($this->redirectTo);
         }
     }
+
+    public function logout() {
+        if (\Auth::user()) {
+            \Auth::logout(\Auth::user());
+        }
+        return redirect('/login');
+    }
 }

@@ -6,7 +6,7 @@ use League\Fractal\TransformerAbstract;
 
 class MemberListTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['members'];
+    protected $availableIncludes = ['members'];
 
     /**
      * A Fractal transformer.
@@ -15,11 +15,7 @@ class MemberListTransformer extends TransformerAbstract
      */
     public function transform(\App\MemberList $list)
     {
-        return [
-            'id' => $list->id,
-            'name' => $list->name,
-            'description' => $list->description
-        ];
+        return $list->toArray();
     }
 
     public function includeMembers(\App\MemberList $list)

@@ -1,15 +1,15 @@
-webpackJsonp([1],{
+webpackJsonp([3],{
 
-/***/ 157:
+/***/ 300:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(158);
-module.exports = __webpack_require__(193);
+__webpack_require__(301);
+module.exports = __webpack_require__(336);
 
 
 /***/ }),
 
-/***/ 158:
+/***/ 301:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21,7 +21,7 @@ module.exports = __webpack_require__(193);
  * building robust, powerful web applications using React + Laravel.
  */
 
-__webpack_require__(60);
+__webpack_require__(45);
 
 /**
  * Next, we will create a fresh React component instance and attach it to
@@ -29,11 +29,11 @@ __webpack_require__(60);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-__webpack_require__(178);
+__webpack_require__(321);
 
 /***/ }),
 
-/***/ 178:
+/***/ 321:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49,7 +49,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(11);
+var _reactDom = __webpack_require__(13);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
@@ -87,14 +87,14 @@ _reactDom2.default.render(_react2.default.createElement(Home, null), document.ge
 
 /***/ }),
 
-/***/ 193:
+/***/ 336:
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
 
-/***/ 60:
+/***/ 45:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -106,7 +106,7 @@ _reactDom2.default.render(_react2.default.createElement(Home, null), document.ge
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(61);
+window.axios = __webpack_require__(35);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -143,4 +143,4 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ })
 
-},[157]);
+},[300]);

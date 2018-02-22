@@ -11,9 +11,10 @@
 |
 */
 
-Route::get('/login', function() {
+Route::get('login', function() {
     return view('login');
 });
+Route::get('logout', 'Auth\\LoginController@logout');
 Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
 Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');
 
@@ -21,8 +22,13 @@ Route::middleware('auth')->group(function(){
     Route::get('/home', function(){
         return view('home');
     });
-    Route::get('/list/create', 'MemberListController@create');
+    Route::get('/lists', 'MemberListController@index')->name('lists');
+    Route::get('/list/create', 'MemberListController@create')->name('list-create');
+    Route::get('/list/{id}', 'MemberListController@show');
     Route::get('/list/import/{spreadsheet_id}/{sheet_id}', 'MemberListController@sheetImport');
+
+    Route::get('/vouchers', 'VoucherController@index')->name('vouchers');
+    Route::get('/voucher/create', 'VoucherController@create')->name('vouchers-create');
 });
 
 Route::middleware('auth')->prefix('api')->group(function() {
@@ -32,4 +38,10 @@ Route::middleware('auth')->prefix('api')->group(function() {
     ->where('sheet_id', '[0-9]+');
 
     Route::post('member_lists', 'Api\\MemberListController@store');
+    Route::get('member_lists', 'Api\\MemberListController@index');
+    Route::get('member_list/{id}', 'Api\\MemberListController@show');
+    Route::post('member_lists/{id}/mailchimp-sync', 'Api\\MemberListController@mailchimpSync');
+
+    Route::post('vouchers', 'Api\\VoucherController@store');
+    Route::get('vouchers', 'Api\\VoucherController@index');
 });

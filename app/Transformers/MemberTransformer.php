@@ -16,6 +16,7 @@ class MemberTransformer extends TransformerAbstract
         $data = [
             'id' => $member->getKey(),
             'name' => $member->name,
+            'email' => $member->email,
             'contactno' => $member->contactno
         ];
 

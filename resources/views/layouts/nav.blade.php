@@ -10,7 +10,7 @@
         </div>
         <div class="navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="dropdown {{ is_active_match('lists')}}">
+                <li class="dropdown {{ is_active_match('list')}}">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                         Lists
                         <b class="caret"></b>
@@ -19,8 +19,22 @@
                         <li class="{{ is_active_route('lists')}}">
                             <a href="/lists">List Management</a>
                         </li>
-                        <li class="{{ is_active_route('new-list')}}">
+                        <li class="{{ is_active_route('list-create')}}">
                             <a href="/list/create">Create a new list</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown {{ is_active_match('voucher')}}">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                        Vouchers
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ is_active_route('vouchers')}}">
+                            <a href="/vouchers">Voucher Management</a>
+                        </li>
+                        <li class="{{ is_active_route('voucher-create')}}">
+                            <a href="/voucher/create">Create a new voucher</a>
                         </li>
                     </ul>
                 </li>

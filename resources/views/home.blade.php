@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'DMS')
+@section('title', 'DMS Home')
 
 @section('content')
 @include('layouts.nav')
