@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
 use Socialite;
 use Carbon\Carbon;
 use App\User;
@@ -42,6 +42,7 @@ class LoginController extends Controller
     }
 
     public function redirectToProvider() {
+        \Session::reflash();
         return Socialite::driver('google')
         ->scopes([
             'profile',
@@ -57,9 +58,11 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback() {
+    public function handleProviderCallback(Request $request) {
         $google_user = Socialite::driver('google')->user();
         $user = User::where('email', '=', $google_user->getEmail())->first();
+        $redirect = $request->session()->has('redirect') ? $request->session()->get('redirect') : $this->redirectTo;
+        $request->session()->forget('redirect');
         if ($user) {
             $user->name = $google_user->getName();
             $user->google_token_added_at = Carbon::now();
@@ -69,7 +72,7 @@ class LoginController extends Controller
             $user->save();
             //assign a cookie that is less than the google expiry for now
             \Auth::login($user, $remember = true);
-            return redirect($this->redirectTo);
+            return redirect($redirect);
         }
     }
 

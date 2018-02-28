@@ -23,6 +23,7 @@ mix.react('resources/assets/js/app.js', 'public/js')
       'react-router-dom',
     ]);
 
+mix.react('resources/assets/js/admins.js', 'public/js');
 mix.react('resources/assets/js/lists.js', 'public/js');
 mix.react('resources/assets/js/vouchers.js', 'public/js');
 

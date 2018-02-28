@@ -38,6 +38,20 @@
                         </li>
                     </ul>
                 </li>
+                <li class="dropdown {{ is_active_match('admin')}}">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                        Admins
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ is_active_route('vouchers')}}">
+                            <a href="/admins">Admin Management</a>
+                        </li>
+                        <li class="{{ is_active_route('voucher-create')}}">
+                            <a href="/admin/create">Create a new admin</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>

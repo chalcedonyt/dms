@@ -77,8 +77,41 @@ module.exports = {
     })
   },
 
-  validateVoucher: (uuid) => {
+  prevalidateVoucher: (uuid) => {
     const encodedURI = window.encodeURI(`${endpoint}/voucher-validate/${uuid}`);
     return axios.get(encodedURI).then(({data}) => data)
+  },
+
+  validateVoucher: (uuid) => {
+    const encodedURI = window.encodeURI(`${endpoint}/voucher-validate/${uuid}`);
+    return axios.post(encodedURI).then(({data}) => data)
+  },
+
+  createAdmin: (params) => {
+    const encodedURI = window.encodeURI(`${endpoint}/user`);
+    return axios.post(encodedURI, params, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(({data}) => data)
+  },
+
+  getAdmins: () => {
+    const encodedURI = window.encodeURI(`${endpoint}/users`);
+    return axios.get(encodedURI).then(({data}) => data)
+  },
+
+  disableAdmin: (id) => {
+    const encodedURI = window.encodeURI(`${endpoint}/user/${id}`);
+    return axios.delete(encodedURI).then(({data}) => data)
+  },
+
+  updateAdmin: (id, params) => {
+    const encodedURI = window.encodeURI(`${endpoint}/user/${id}`);
+    return axios.put(encodedURI, params, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(({data}) => data)
   }
 }

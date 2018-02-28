@@ -15,14 +15,16 @@ Route::get('/', function() {
     return view('login');
 });
 Route::get('login', function() {
+    \Session::reflash();
     return view('login');
-});
+})->name('login');
 Route::get('logout', 'Auth\\LoginController@logout');
 Route::get('login/google', 'Auth\\LoginController@redirectToProvider');
 Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallback');
 
-Route::get('/bc/{uuid}', 'VoucherAssignmentController@validateVoucher');
-
+Route::middleware('auth.redirect')->group(function() {
+    Route::get('/bc/{uuid}', 'VoucherAssignmentController@validateVoucher');
+});
 Route::middleware('auth')->group(function(){
     Route::get('/home', function(){
         return view('home');
@@ -34,6 +36,13 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/vouchers', 'VoucherController@index')->name('vouchers');
     Route::get('/voucher/create', 'VoucherController@create')->name('vouchers-create');
+
+    Route::get('/admins', function() {
+        return view('admins.index');
+    });
+    Route::get('/admin/create', function() {
+        return view('admins.create');
+    });
 });
 
 Route::middleware('auth')->prefix('api')->group(function() {
@@ -50,7 +59,12 @@ Route::middleware('auth')->prefix('api')->group(function() {
 
     Route::post('vouchers', 'Api\\VoucherController@store');
     Route::get('vouchers', 'Api\\VoucherController@index');
+    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@prevalidateVoucher');
+    Route::post('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
+
+    Route::get('users', 'Api\\UserController@index');
+    Route::delete('user/{user}', 'Api\\UserController@destroy');
+    Route::put('user/{user}', 'Api\\UserController@update');
+    Route::post('user', 'Api\\UserController@store');
 });
-Route::prefix('api')->group(function(){
-    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
-});
+

@@ -68,7 +68,12 @@
                         <div class="form-group">
                         <!-- Button -->
                             <div class="col-sm-12 controls">
+                                @if (\Session::has('redirect'))
+                                <p>Login to authenticate voucher</p>
+                                <a id="btn-googlelogin" href="/login/google?redirect={{\Session::get('redirect')}}" class="btn btn-google">Authenticate with Google</a>
+                                @else
                                 <a id="btn-googlelogin" href="/login/google" class="btn btn-google">Authenticate with Google</a>
+                                @endif
                             </div>
                         </div>
                     </form>
