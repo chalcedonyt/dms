@@ -26,6 +26,7 @@ mix.react('resources/assets/js/app.js', 'public/js')
 mix.react('resources/assets/js/admins.js', 'public/js');
 mix.react('resources/assets/js/lists.js', 'public/js');
 mix.react('resources/assets/js/vouchers.js', 'public/js');
+mix.react('resources/assets/js/members.js', 'public/js');
 
 mix.less('resources/assets/less/app.less', 'public/css');
 if (mix.inProduction()) {

@@ -24,6 +24,17 @@
                         </li>
                     </ul>
                 </li>
+                <li class="dropdown {{ is_active_match('member')}}">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
+                        Members
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{{ is_active_route('members')}}">
+                            <a href="/members">Member Management</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="dropdown {{ is_active_match('voucher')}}">
                     <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                         Vouchers

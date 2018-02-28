@@ -113,5 +113,10 @@ module.exports = {
         'Content-Type': 'application/json'
       }
     }).then(({data}) => data)
+  },
+
+  getMembers: () => {
+    const encodedURI = window.encodeURI(`${endpoint}/members`);
+    return axios.get(encodedURI).then(({data}) => data)
   }
 }

@@ -6,6 +6,8 @@ use League\Fractal\TransformerAbstract;
 
 class MemberTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = ['memberLists'];
+
     /**
      * A Fractal transformer.
      *
@@ -17,7 +19,8 @@ class MemberTransformer extends TransformerAbstract
             'id' => $member->getKey(),
             'name' => $member->name,
             'email' => $member->email,
-            'contactno' => $member->contactno
+            'contactno' => $member->contactno,
+            'created_at' => \Carbon\Carbon::parse($member->created_at)->format('d M, Y')
         ];
 
         if ($member->pivot && get_class($member->pivot->pivotParent) == \App\MemberList::class) {
@@ -43,5 +46,12 @@ class MemberTransformer extends TransformerAbstract
             }
         }
         return $data;
+    }
+
+    public function includeMemberLists($member)
+    {
+        if ($member->memberLists) {
+            return $this->collection($member->memberLists, new \App\Transformers\MemberListTransformer);
+        }
     }
 }

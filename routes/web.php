@@ -29,6 +29,10 @@ Route::middleware('auth')->group(function(){
     Route::get('/home', function(){
         return view('home');
     });
+    Route::get('/members', function() {
+        return view('members.index');
+    });
+
     Route::get('/lists', 'MemberListController@index')->name('lists');
     Route::get('/list/create', 'MemberListController@create')->name('list-create');
     Route::get('/list/{id}', 'MemberListController@show');
@@ -46,6 +50,8 @@ Route::middleware('auth')->group(function(){
 });
 
 Route::middleware('auth')->prefix('api')->group(function() {
+    Route::get('members', 'Api\\MemberController@index');
+
     Route::get('spreadsheets', 'Api\\GoogleSheetsController@index');
     Route::get('spreadsheets/{spreadsheet_id}/sheets', 'Api\\GoogleSheetsController@sheets');
     Route::get('spreadsheets/{spreadsheet_id}/{sheet_id}', 'Api\\GoogleSheetsController@show')
