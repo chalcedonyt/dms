@@ -66,9 +66,6 @@ class CreateList extends Component {
         <div>
           <Button bsStyle='primary' onClick={this.loadSheets}>
             Import from Google sheets
-          </Button> or
-          <Button>
-            Manual entry
           </Button>
         </div>
         <div>

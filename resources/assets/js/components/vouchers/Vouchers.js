@@ -46,10 +46,9 @@ class Vouchers extends Component {
                     <VoucherExpiryTypeText voucher={voucher} />
                   </td>
                   <td>
-                    <Button
-                      bsStyle='link'
-                      href={`/voucher/${voucher.id}/redemptions`}
-                    >View</Button>
+                    <a href={`/voucher/${voucher.id}/redemptions`}
+                    >{voucher.redemption_count} redemption(s)
+                    </a>
                   </td>
                 </tr>
               ))}

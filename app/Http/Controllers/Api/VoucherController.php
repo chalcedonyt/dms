@@ -11,7 +11,8 @@ class VoucherController extends Controller
 {
     public function index(Request $request)
     {
-        $vouchers = Voucher::orderBy('created_at', 'DESC')
+        $vouchers = Voucher::with('voucherRedemptions')
+        ->orderBy('created_at', 'DESC')
         ->limit(30)
         ->get();
 

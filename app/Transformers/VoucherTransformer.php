@@ -27,6 +27,7 @@ class VoucherTransformer extends TransformerAbstract
             $data['expiry_type'] = 'Days after issuing';
             $data['expires_days'] = $voucher->expires_days;
         }
+        $data['redemption_count'] = $voucher->voucherRedemptions->count();
         return $data;
     }
 }
