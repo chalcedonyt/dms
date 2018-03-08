@@ -65,6 +65,11 @@ module.exports = {
     return axios.get(encodedURI).then(({data}) => data)
   },
 
+  getVoucherRedemptions: (voucherId) => {
+    const encodedURI = window.encodeURI(`${endpoint}/voucher/${voucherId}/redemptions`)
+    return axios.get(encodedURI).then(({data}) => data)
+  },
+
   assignVoucher: (listId, memberIds, voucher) => {
     const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}/assign-voucher`);
     return axios.post(encodedURI, {

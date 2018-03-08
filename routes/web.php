@@ -38,8 +38,15 @@ Route::middleware('auth')->group(function(){
     Route::get('/list/{id}', 'MemberListController@show');
     Route::get('/list/import/{spreadsheet_id}/{sheet_id}', 'MemberListController@sheetImport');
 
-    Route::get('/vouchers', 'VoucherController@index')->name('vouchers');
-    Route::get('/voucher/create', 'VoucherController@create')->name('vouchers-create');
+    Route::get('/vouchers', function() {
+        return view('vouchers.index');
+    })->name('vouchers');
+    Route::get('/voucher/create', function() {
+        return view('vouchers.create');
+    })->name('vouchers-create');
+    Route::get('/voucher/{id}/redemptions', function() {
+        return view('vouchers.redemptions');
+    })->name('vouchers-history');
 
     Route::get('/admins', function() {
         return view('admins.index');
@@ -67,6 +74,8 @@ Route::middleware('auth')->prefix('api')->group(function() {
     Route::get('vouchers', 'Api\\VoucherController@index');
     Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@prevalidateVoucher');
     Route::post('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
+
+    Route::get('voucher/{voucher}/redemptions', 'Api\\VoucherRedemptionController@index');
 
     Route::get('users', 'Api\\UserController@index');
     Route::delete('user/{user}', 'Api\\UserController@destroy');

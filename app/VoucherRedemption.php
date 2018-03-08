@@ -14,6 +14,11 @@ class VoucherRedemption extends Model
         return $this->belongsTo(\App\Voucher::class);
     }
 
+    public function voucherAssignment()
+    {
+        return $this->belongsTo(\App\VoucherAssignment::class);
+    }
+
     public function validator()
     {
         return $this->belongsTo(\App\User::class, 'validated_by');

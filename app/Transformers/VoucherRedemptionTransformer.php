@@ -8,7 +8,11 @@ use App\VoucherRedemption;
 
 class VoucherRedemptionTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['voucher', 'validator'];
+    protected $availableIncludes = [
+        'member',
+        'validator',
+        'voucher',
+    ];
     /**
      * A Fractal transformer.
      *
@@ -28,6 +32,12 @@ class VoucherRedemptionTransformer extends TransformerAbstract
     public function includeValidator($vr) {
         if ($vr->validator) {
             return $this->item($vr->validator, new UserTransformer);
+        }
+    }
+
+    public function includeMember($vr) {
+        if ($vr->voucherAssignment) {
+            return $this->item($vr->voucherAssignment->member, new MemberTransformer);
         }
     }
 }
