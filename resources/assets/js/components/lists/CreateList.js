@@ -10,10 +10,14 @@ const ListGroupItem = require('react-bootstrap/lib/ListGroupItem')
 const Panel = require('react-bootstrap/lib/Panel')
 const Row = require('react-bootstrap/lib/Row')
 
+const Progress = require('../shared/Progress')
+
 class CreateList extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      isLoadingSpreadsheets: false,
+      isLoadingSheets: false,
       spreadsheets: null,
       selectedSpreadsheetId: null,
       sheets: null,
@@ -26,15 +30,18 @@ class CreateList extends Component {
 
   handleSpreadsheetSelect(selectedSpreadsheetId) {
     this.setState({
+      isLoadingSheets: true,
       selectedSpreadsheetId
+    }, () => {
+      api.getSheets(selectedSpreadsheetId)
+        .then(({ sheets }) => {
+          this.setState({
+            isLoadingSheets: false,
+            sheets
+          })
+        })
     })
 
-    api.getSheets(selectedSpreadsheetId)
-      .then(({ sheets }) => {
-        this.setState({
-          sheets
-        })
-      })
   }
 
   handleSheetSelect(selectedSheetId) {
@@ -44,12 +51,17 @@ class CreateList extends Component {
   }
 
   loadSheets() {
-    api.getSpreadsheets()
-      .then(({ spreadsheets }) => {
-        this.setState({
-          spreadsheets
+    this.setState({
+      isLoadingSpreadsheets: true
+    }, () => {
+      api.getSpreadsheets()
+        .then(({ spreadsheets }) => {
+          this.setState({
+            spreadsheets,
+            isLoadingSpreadsheets: false
+          })
         })
-      })
+    })
   }
 
   render() {
@@ -71,6 +83,9 @@ class CreateList extends Component {
         <div>
           <Row>
             <Col md={5}>
+              {!Array.isArray(this.state.spreadsheets) && this.state.isLoadingSpreadsheets && (
+                <Progress margin={100} size={40} inProgress={this.state.isLoadingSpreadsheets}></Progress>
+              )}
               {Array.isArray(this.state.spreadsheets) && (
                 <Panel bsStyle='info'>
                   <Panel.Heading>
@@ -93,6 +108,9 @@ class CreateList extends Component {
               )}
             </Col>
             <Col md={3}>
+            {!Array.isArray(this.state.sheets) && this.state.isLoadingSheets && (
+                <Progress margin={100} size={40} inProgress={this.state.isLoadingSheets}></Progress>
+              )}
             {Array.isArray(this.state.sheets) && (
               <Panel bsStyle='info'>
                 <Panel.Heading>

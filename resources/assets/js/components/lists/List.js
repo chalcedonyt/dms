@@ -17,6 +17,7 @@ const Row = require('react-bootstrap/lib/Row')
 const Table = require('react-bootstrap/lib/Table')
 
 const VoucherExpiryTypeText = require('../vouchers/VoucherExpiryTypeText')
+const Progress = require('../shared/Progress')
 
 class List extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class List extends Component {
       description: null,
       errors: null,
       hasMailchimpList: null,
+      isSyncing: false,
       members: null,
       name: null,
       selectedMemberIds: [],
@@ -74,13 +76,18 @@ class List extends Component {
   }
 
   handleSync() {
-    api.syncWithMailchimp(this.props.match.params.listId)
-      .then(({ success, errors }) => {
-        this.setState({
-          errors,
-          hasMailchimpList: true,
+    this.setState({
+      isSyncing: true
+    }, () => {
+      api.syncWithMailchimp(this.props.match.params.listId)
+        .then(({ success, errors }) => {
+          this.setState({
+            errors,
+            hasMailchimpList: true,
+            isSyncing: false
+          })
         })
-      })
+    })
   }
 
   handleVoucherModalClose() {
@@ -126,9 +133,20 @@ class List extends Component {
         <AlertDismissable errors={this.state.errors} />
 
         <h2>Actions</h2>
-        <ButtonGroup>
-          <Button onClick={this.handleSync}>{this.state.hasMailchimpList ? 'Update Mailchimp List' : 'Create Mailchimp List'}</Button>
-        </ButtonGroup>
+        <Row>
+          <Col md={2} xs={2}>
+            <ButtonGroup>
+              <Button
+                onClick={this.handleSync}
+                disabled={this.state.isSyncing}
+              >{this.state.hasMailchimpList ? 'Update Mailchimp List' : 'Create Mailchimp List'}
+              </Button>
+            </ButtonGroup>
+          </Col>
+          <Col md={2} xs={2}>
+            <Progress inProgress={this.state.isSyncing} size={20} />
+          </Col>
+        </Row>
 
         <h2>List Members</h2>
         {this.state.members &&
