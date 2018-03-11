@@ -67,6 +67,7 @@ Route::middleware('auth')->prefix('api')->group(function() {
     Route::post('member_lists', 'Api\\MemberListController@store');
     Route::get('member_lists', 'Api\\MemberListController@index');
     Route::get('member_list/{id}', 'Api\\MemberListController@show');
+    Route::delete('member_list/{list}', 'Api\\MemberListController@delete');
     Route::post('member_list/{id}/assign-voucher', 'Api\\MemberListController@assignVoucher');
     Route::post('member_list/{id}/mailchimp-sync', 'Api\\MemberListController@mailchimpSync');
 

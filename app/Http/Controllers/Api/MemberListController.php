@@ -43,6 +43,8 @@ class MemberListController extends Controller
     public function index(Request $request)
     {
         $lists = \App\MemberList::orderBy('created_at', 'DESC')
+        //should possibly put this in a global scope
+        ->where('hidden', 0)
         ->limit(20)
         ->offset($request->input('offset', 0))
         ->get();
@@ -76,6 +78,16 @@ class MemberListController extends Controller
                 'uuid' => md5(rand().$list->title)
             ]);
         }
+        return response()->json([
+            'success' => 1,
+            'errors' => []
+        ]);
+    }
+
+    public function delete(Request $request, \App\MemberList $list) {
+        $list->hidden = true;
+        $list->save();
+
         return response()->json([
             'success' => 1,
             'errors' => []

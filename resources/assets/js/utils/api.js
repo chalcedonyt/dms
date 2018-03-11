@@ -45,6 +45,11 @@ module.exports = {
     return axios.get(encodedURI).then(({data}) => data)
   },
 
+  deleteList: (listId) => {
+    const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}`);
+    return axios.delete(encodedURI).then(({data}) => data)
+  },
+
   syncWithMailchimp: (listId) => {
     const encodedURI = window.encodeURI(`${endpoint}/member_list/${listId}/mailchimp-sync`);
     return axios.post(encodedURI).then(({data}) => data)

@@ -11,15 +11,34 @@ class Lists extends Component {
     this.state = {
       memberLists: null
     }
+    this.handleListDelete = this.handleListDelete.bind(this)
+    this.loadLists = this.loadLists.bind(this)
   }
 
   componentWillMount() {
+    this.loadLists()
+  }
+
+  loadLists() {
     api.getLists()
       .then(({ member_lists: memberLists }) => {
         this.setState({
           memberLists
         })
       })
+  }
+
+  handleListDelete(id) {
+    api.deleteList(id)
+      .then(() => {
+        this.loadLists()
+      })
+  }
+
+  confirmListDelete(id) {
+    if (confirm("Really hide this list?")) {
+      this.handleListDelete(id)
+    }
   }
 
   render() {
@@ -33,7 +52,7 @@ class Lists extends Component {
                   <th>Name</th>
                   <th>Description</th>
                   <th>Created on</th>
-                  <th>View</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -50,6 +69,7 @@ class Lists extends Component {
                     </td>
                     <td>
                       <Button bsStyle='info' href={'/list/' + list.id}>View</Button>
+                      <Button bsStyle='warning' onClick={(e) => this.confirmListDelete(list.id)}>Hide</Button>
                     </td>
                   </tr>
                 ))}

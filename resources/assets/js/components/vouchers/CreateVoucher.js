@@ -179,6 +179,7 @@ class CreateVoucher extends Component {
             </div>
           </Col>
         </Row>
+        <br />
         <Button
           bsStyle='primary'
           bsSize='large'
