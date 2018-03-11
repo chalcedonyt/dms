@@ -12,8 +12,8 @@ class VoucherExpiryTypeText extends Component {
       <p>
         {voucher.expiry_type == 'Fixed'
         ? 'Expires on ' + voucher.expires_at
-        : voucher.expiry_type == 'Days after issuing'
-        ? 'Expires ' + voucher.expires_days + ' day(s) after issuing'
+        : voucher.expiry_type == 'Weeks after issuing'
+        ? 'Expires ' + voucher.expires_weeks + ' week(s) after issuing'
         : 'No expiry'}
       </p>
     )

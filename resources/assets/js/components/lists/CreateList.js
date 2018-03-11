@@ -118,10 +118,10 @@ class CreateList extends Component {
                   </Panel.Heading>
                 <Panel.Body>
                   <ListGroup>
-                    {this.state.sheets.map((sheet) => (
+                    {this.state.sheets.map((sheet, i) => (
                       <ListGroupItem
                         style={{ width: '100%', textAlign: 'left' }}
-                        key={sheet.id}
+                        key={i}
                         bsStyle={sheet.id == this.state.selectedSheetId ? 'info': null}
                         onClick={(e) => this.handleSheetSelect(sheet.id)}>
                         {sheet.name}
@@ -132,7 +132,8 @@ class CreateList extends Component {
               </Panel>
             )}
             </Col>
-            {this.state.selectedSheetId && this.state.selectedSpreadsheetId && (
+            {//a sheet can have id 0
+              this.state.selectedSheetId != null && this.state.selectedSpreadsheetId != null && (
             <Col md={2}>
               <Panel bsStyle='info'>
                 <Panel.Heading>

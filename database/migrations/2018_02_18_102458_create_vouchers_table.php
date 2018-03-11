@@ -16,7 +16,7 @@ class CreateVouchersTable extends Migration
         Schema::create('vouchers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('usage_limit')->default(0)->comment("0 means no limit");
-            $table->integer('expires_days')->default(0)->comment("0 means no expiry");
+            $table->integer('expires_weeks')->default(0)->comment("0 means no expiry");
             $table->timestamp('expires_at')->nullable();
             $table->string('title');
             $table->text('description');

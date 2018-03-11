@@ -27,9 +27,9 @@ class VoucherController extends Controller
             $expires_at = \Carbon\Carbon::parse($expires_at)->endOfDay();
 
         $voucher = Voucher::create([
-            'title' => $request->input('title', 'Untitle Voucher'),
+            'title' => $request->input('title', 'Untitled Voucher'),
             'description' => $request->input('description', ''),
-            'expires_days' => $request->input('expires_days', 0),
+            'expires_weeks' => $request->input('expires_weeks', 0),
             'expires_at' => $expires_at,
             'usage_limit' => $request->input('usage_limit', 0)
         ]);

@@ -23,9 +23,9 @@ class VoucherTransformer extends TransformerAbstract
             $data['expiry_type'] = 'Fixed';
             $data['expires_at'] = $voucher->expires_at;
         }
-        if ($voucher->expires_days) {
-            $data['expiry_type'] = 'Days after issuing';
-            $data['expires_days'] = $voucher->expires_days;
+        if ($voucher->expires_weeks) {
+            $data['expiry_type'] = 'Weeks after issuing';
+            $data['expires_weeks'] = $voucher->expires_weeks;
         }
         $data['redemption_count'] = $voucher->voucherRedemptions->count();
         return $data;

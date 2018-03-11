@@ -23,8 +23,8 @@ class CreateVoucher extends Component {
       title: '',
       description: '',
       expiresAt: moment().add(3, 'months'),
-      expiresDays: 0,
-      expiryOption: null, //days, fixed
+      expiresWeeks: 0,
+      expiryOption: null, //weeks, fixed
       showDialog: false,
       usageLimit: 0,
     }
@@ -43,16 +43,16 @@ class CreateVoucher extends Component {
       usage_limit: this.state.usageLimit
     }
     switch (this.state.expiryOption) {
-      case 'days':
-        params.expires_days = this.state.expiresDays
+      case 'weeks':
+        params.expires_weeks = this.state.expiresWeeks
         params.expires_at = null
         break
       case 'fixed':
-        params.expires_days = 0
+        params.expires_weeks = 0
         params.expires_at = this.state.expiresAt.format()
         break
       default:
-        params.expires_days = 0
+        params.expires_weeks = 0
         params.expires_at = null
         break
     }
@@ -141,10 +141,10 @@ class CreateVoucher extends Component {
                 No expiry
                 </Button>
               <Button
-                bsStyle={this.state.expiryOption == 'days' ? 'info' : 'default'}
-                onClick={(e) => this.setExpiryOption('days')}
+                bsStyle={this.state.expiryOption == 'weeks' ? 'info' : 'default'}
+                onClick={(e) => this.setExpiryOption('weeks')}
               >
-                Expires X days after issuing
+                Expires X weeks after issuing
                 </Button>
               <Button
                 bsStyle={this.state.expiryOption == 'fixed' ? 'info' : 'default'}
@@ -156,14 +156,14 @@ class CreateVoucher extends Component {
           </Col>
           <Col md={2} xs={2}>
             <div>
-              {this.state.expiryOption == 'days' &&
+              {this.state.expiryOption == 'weeks' &&
                 <div>
-                  <ControlLabel>Expires in days (optional)</ControlLabel>
+                  <ControlLabel>Expires in weeks (optional)</ControlLabel>
                   <FormControl
                     type="number"
-                    placeholder="How many days will the voucher be valid for? (0 for no limit)"
-                    onChange={(e) => this.handleChange(e, 'expiresDays')}
-                    defaultValue={this.state.expiresDays}>
+                    placeholder="How many weeks will the voucher be valid for? (0 for no limit)"
+                    onChange={(e) => this.handleChange(e, 'expiresWeeks')}
+                    defaultValue={this.state.expiresWeeks}>
                   </FormControl>
                 </div>
               }
@@ -194,9 +194,9 @@ class CreateVoucher extends Component {
             <p>{this.state.title}</p>
             <h4>Usage</h4>
             <p>This voucher can be used {this.state.usageLimit == 0 ? 'unlimited' : this.state.usageLimit} time(s)</p>
-            {this.state.expiryOption == 'days' && this.state.expiresDays > 0 &&
+            {this.state.expiryOption == 'weeks' && this.state.expiresWeeks > 0 &&
               <p>
-                This voucher will expire {this.state.expiresDays} day(s) after being issued
+                This voucher will expire {this.state.expiresWeeks} week(s) after being issued
             </p>
             }
             {this.state.expiryOption == 'fixed' && this.state.expiresAt != null &&

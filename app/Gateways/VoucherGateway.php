@@ -9,6 +9,6 @@ class VoucherGateway
         if ($v->expires_at) {
             return $v->expires_at;
         }
-        else return \Carbon\Carbon::now()->addDays($v->expires_days)->endOfDay();
+        else return \Carbon\Carbon::now()->addWeeks($v->expires_weeks)->endOfWeek();
     }
 }

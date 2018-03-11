@@ -40,11 +40,23 @@ class List extends Component {
     this.handleVoucherModalClose = this.handleVoucherModalClose.bind(this)
     this.handleVoucherModalConfirm = this.handleVoucherModalConfirm.bind(this)
     this.handleVoucherSelect = this.handleVoucherSelect.bind(this)
+    this.loadList = this.loadList.bind(this)
     this.toggleSelect = this.toggleSelect.bind(this)
     this.toggleSelectAll = this.toggleSelectAll.bind(this)
   }
 
   componentWillMount() {
+    this.loadList()
+
+    api.getVouchers()
+    .then(({ vouchers }) => {
+      this.setState({
+        vouchers
+      })
+    });
+  }
+
+  loadList() {
     api.getList(this.props.match.params.listId)
       .then(({ name, description, members, created_at: createdAt, mailchimp_list_id }) => {
         this.setState({
@@ -55,13 +67,6 @@ class List extends Component {
           hasMailchimpList: mailchimp_list_id || null
         })
       })
-
-    api.getVouchers()
-      .then(({ vouchers }) => {
-        this.setState({
-          vouchers
-        })
-      });
   }
 
   toggleSelect(e) {
@@ -103,6 +108,8 @@ class List extends Component {
       this.setState({
         selectedVoucher: null,
         showVoucherModal: false
+      }, () => {
+        this.loadList()
       })
     })
   }

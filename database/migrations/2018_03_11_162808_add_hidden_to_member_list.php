@@ -14,7 +14,7 @@ class AddHiddenToMemberList extends Migration
     public function up()
     {
         Schema::table('member_lists', function (Blueprint $table) {
-            $table->tinyInteger("hidden");
+            $table->tinyInteger('hidden')->default(0);
         });
     }
 
@@ -26,7 +26,7 @@ class AddHiddenToMemberList extends Migration
     public function down()
     {
         Schema::table('member_lists', function (Blueprint $table) {
-            $table->dropColumn("hidden");
+            $table->dropColumn('hidden');
         });
     }
 }
