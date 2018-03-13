@@ -104,7 +104,7 @@ class MemberListController extends Controller
             'members' => 'required|array',
             'members.*.attributes' => 'required|array',
             'members.*.attributes.*.offset' => 'required|integer',
-            'members.*.special.email' => 'string|required',
+            'members.*.special.email' => 'string|required|distinct',
             'members.*.special.name' => 'string|required',
             'members.*.special.contact' => 'string'
         ]);
@@ -220,5 +220,17 @@ class MemberListController extends Controller
             $data['success'] = true;
         }
         return response()->json($data);
+    }
+
+    public function removeMembers(Request $request, MemberList $member_list) {
+        $member_ids = $request->input('member_ids');
+
+        foreach ($member_ids as $member_id) {
+            $m = Member::find($member_id);
+            $member_list->members()->detach($m);
+        }
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

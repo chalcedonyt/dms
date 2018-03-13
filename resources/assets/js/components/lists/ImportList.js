@@ -12,6 +12,8 @@ const Panel = require('react-bootstrap/lib/Panel')
 const Row = require('react-bootstrap/lib/Row')
 const Table = require('react-bootstrap/lib/Table')
 
+const Progress = require('../shared/Progress')
+
 class ImportList extends Component {
   constructor(props) {
     super(props)
@@ -115,12 +117,17 @@ class ImportList extends Component {
     api.importData(params)
     .then(({id}) => {
       window.location = '/list/' + id
+    }, () => {
+      alert("An error occurred when importing data. Please ensure that all columns have headers, that there are no duplicate emails, and that there are columns corresponding to Email, Name, and Contact types.")
     })
   }
 
   render() {
     return (
       <div className="container">
+        {!Array.isArray(this.state.headers) &&
+          <Progress size={30} margin={100} inProgress={true}/>
+        }
         {Array.isArray(this.state.headers) &&
           <div>
             <div>

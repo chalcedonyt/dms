@@ -36,6 +36,7 @@ class List extends Component {
       vouchers: []
     }
 
+    this.handleMembersDelete = this.handleMembersDelete.bind(this)
     this.handleSync = this.handleSync.bind(this)
     this.handleVoucherModalClose = this.handleVoucherModalClose.bind(this)
     this.handleVoucherModalConfirm = this.handleVoucherModalConfirm.bind(this)
@@ -78,6 +79,15 @@ class List extends Component {
       : this.setState({
         selectedMemberIds: _.concat(this.state.selectedMemberIds, [val])
       })
+  }
+
+  handleMembersDelete() {
+    if (confirm("Delete members from list? (They will not be removed from central directory)"))  {
+      api.deleteMembersFromList(this.props.match.params.listId, this.state.selectedMemberIds)
+      .then(() => {
+        this.loadList()
+      })
+    }
   }
 
   handleSync() {
@@ -144,6 +154,7 @@ class List extends Component {
           <Col md={2} xs={2}>
             <ButtonGroup>
               <Button
+                bsStyle='info'
                 onClick={this.handleSync}
                 disabled={this.state.isSyncing}
               >{this.state.hasMailchimpList ? 'Update Mailchimp List' : 'Create Mailchimp List'}
@@ -166,18 +177,25 @@ class List extends Component {
         {this.state.selectedMemberIds.length > 0 &&
         <div>
           <h5>With selected:</h5>
-          <DropdownButton
-            title="Choose a voucher to assign"
-            id={`dropdown-basic`}
-            >
-            {this.state.vouchers.map((v) => (
-              <MenuItem
-                key={v.id}
-                eventKey={v.id}
-                onClick={(e) => this.handleVoucherSelect(v)}
-              >{v.title}</MenuItem>
-            ))}
-          </DropdownButton>
+          <ButtonGroup>
+            <DropdownButton
+              bsStyle='info'
+              title="Choose a voucher to assign"
+              id={`dropdown-basic`}
+              >
+              {this.state.vouchers.map((v) => (
+                <MenuItem
+                  key={v.id}
+                  eventKey={v.id}
+                  onClick={(e) => this.handleVoucherSelect(v)}
+                >{v.title}</MenuItem>
+              ))}
+            </DropdownButton>
+            <Button
+              bsStyle='danger'
+              onClick={this.handleMembersDelete}
+            >Remove from List</Button>
+          </ButtonGroup>
           {this.state.selectedVoucher &&
             <Modal show={this.state.showVoucherModal}>
               <Modal.Header>
