@@ -61,8 +61,7 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request) {
         $google_user = Socialite::driver('google')->user();
         $user = User::where('email', '=', $google_user->getEmail())->first();
-        $redirect = $request->session()->has('redirect') ? $request->session()->get('redirect') : $this->redirectTo;
-        $request->session()->forget('redirect');
+
         if ($user) {
             $user->name = $google_user->getName();
             $user->google_token_added_at = Carbon::now();
@@ -72,6 +71,14 @@ class LoginController extends Controller
             $user->save();
             //assign a cookie that is less than the google expiry for now
             \Auth::login($user, $remember = true);
+
+            $redirect = $request->session()->has('redirect')
+            ? $request->session()->get('redirect')
+            : \Auth::user()->isAdmin()
+                ? $this->redirectTo
+                : '/';
+
+            $request->session()->forget('redirect');
             return redirect($redirect);
         }
     }

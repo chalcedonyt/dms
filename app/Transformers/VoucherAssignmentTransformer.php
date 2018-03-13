@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 class VoucherAssignmentTransformer extends TransformerAbstract
 {
     protected $defaultIncludes = ['voucher'];
-    protected $availableIncludes = ['member'];
+    protected $availableIncludes = ['member', 'memberList'];
     /**
      * A Fractal transformer.
      *
@@ -32,6 +32,12 @@ class VoucherAssignmentTransformer extends TransformerAbstract
     public function includeMember(\App\VoucherAssignment $va) {
         if ($va->member) {
             return $this->item($va->member, new MemberTransformer);
+        }
+    }
+
+    public function includeMemberList(\App\VoucherAssignment $va) {
+        if ($va->memberList) {
+            return $this->item($va->memberList, new MemberListTransformer);
         }
     }
 }

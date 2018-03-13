@@ -25,7 +25,7 @@ Route::get('oauth/google/callback', 'Auth\\LoginController@handleProviderCallbac
 Route::middleware('auth.redirect')->group(function() {
     Route::get('/bc/{uuid}', 'VoucherAssignmentController@validateVoucher');
 });
-Route::middleware('auth')->group(function(){
+Route::middleware(['auth','admin-only'])->group(function(){
     Route::get('/home', function(){
         return view('home');
     });
@@ -74,8 +74,6 @@ Route::middleware('auth')->prefix('api')->group(function() {
 
     Route::post('vouchers', 'Api\\VoucherController@store');
     Route::get('vouchers', 'Api\\VoucherController@index');
-    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@prevalidateVoucher');
-    Route::post('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
 
     Route::get('voucher/{voucher}/redemptions', 'Api\\VoucherRedemptionController@index');
 
@@ -83,5 +81,8 @@ Route::middleware('auth')->prefix('api')->group(function() {
     Route::delete('user/{user}', 'Api\\UserController@destroy');
     Route::put('user/{user}', 'Api\\UserController@update');
     Route::post('user', 'Api\\UserController@store');
+
+    Route::get('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@prevalidateVoucher');
+    Route::post('voucher-validate/{uuid}', 'Api\\VoucherAssignmentController@validateVoucher');
 });
 

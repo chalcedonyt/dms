@@ -21,4 +21,8 @@ class VoucherAssignment extends Model
     public function member() {
         return $this->belongsTo(\App\Member::class);
     }
+
+    public function memberList() {
+        return $this->belongsTo(\App\MemberList::class);
+    }
 }

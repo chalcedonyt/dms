@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 const api = require('../../utils/api')
 
+const Panel = require('react-bootstrap/lib/Panel')
 const Button = require('react-bootstrap/lib/Button')
 
 class ValidateVoucher extends Component {
@@ -9,7 +10,8 @@ class ValidateVoucher extends Component {
     super(props)
     this.state = {
       voucherAssignment: null,
-      validated: false
+      validated: false,
+      validityError: null
     }
 
     this.handleValidation = this.handleValidation.bind(this)
@@ -17,9 +19,10 @@ class ValidateVoucher extends Component {
 
   componentDidMount() {
     api.prevalidateVoucher(this.props.match.params.uuid)
-    .then((voucherAssignment) => {
+    .then(({voucher_assignment: voucherAssignment, validity_error: validityError}) => {
       this.setState({
-        voucherAssignment
+        voucherAssignment,
+        validityError
       })
     })
   }
@@ -45,13 +48,23 @@ class ValidateVoucher extends Component {
             <h5>Type</h5>
             {this.state.voucherAssignment.voucher.title}
             <h5>Issued on</h5>
-            {this.state.voucherAssignment.created_at}
+            {this.state.voucherAssignment.created_at} - {this.state.voucherAssignment.memberList.name}
             <h5>Name</h5>
             <p>{this.state.voucherAssignment.member.name}</p>
             <h5>Expires: </h5>
             <p>{this.state.voucherAssignment.expires_at}</p>
-            {!this.state.validated && (
+            {!this.state.validated && !this.state.validityError && (
               <Button bsStyle='primary' onClick={this.handleValidation}>Validate</Button>
+            )}
+            {this.state.validityError && (
+              <Panel bsStyle='warning'>
+                <Panel.Heading>
+                  Could not redeem voucher
+                </Panel.Heading>
+                <Panel.Body>
+                  <p>Reason: {this.state.validityError}</p>
+                </Panel.Body>
+              </Panel>
             )}
           </div>
         )}
