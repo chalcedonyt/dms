@@ -72,12 +72,13 @@ class LoginController extends Controller
             //assign a cookie that is less than the google expiry for now
             \Auth::login($user, $remember = true);
 
-            $redirect = $request->session()->has('redirect')
-            ? $request->session()->get('redirect')
-            : \Auth::user()->isAdmin()
-                ? $this->redirectTo
-                : '/';
+            $redirect = \Auth::user()->isAdmin()
+            ? $this->redirectTo
+            : '/';
 
+            if ($request->session()->has('redirect')) {
+                $redirect = $request->session()->get('redirect');
+            }
             $request->session()->forget('redirect');
             return redirect($redirect);
         }
